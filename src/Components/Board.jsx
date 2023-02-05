@@ -1,69 +1,73 @@
-// import React from "react";
 import React, { useState } from "react";
 import Square from "./Square";
 
 const Board = () => {
-  const [state, setState] = useState(Array(9).fill(null));
-  const [isXNext, setIsXNext] = useState(true);
+  const [grid, setGrid] = useState(Array(9).fill(null));
+  const [currentPlayer, setCurrentPlayer] = useState("X");
 
-  const checkWinner = () => {
-    const winningLogic = [
-      [0, 1, 2], // this for row
-      [3, 4, 5], // this for row
-      [6, 7, 8], // this for row
-      [0, 3, 6], // this for column
-      [1, 4, 7], // this for column
-      [2, 5, 8], // this for column
-      [0, 4, 8], // this for diagonal
-      [2, 4, 6], // this for diagonal
+  const calculateWinner = () => {
+    const winningCombinations = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8], // rows
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8], // columns
+      [0, 4, 8],
+      [2, 4, 6], // diagonals
     ];
-    for (let logic of winningLogic) {
-      const [a, b, c] = logic;
-      if (state[a] !== null && state[a] === state[b] && state[a] === state[c]) {
-        return state[a];
+    for (const combination of winningCombinations) {
+      const [a, b, c] = combination;
+      if (grid[a] && grid[a] === grid[b] && grid[a] === grid[c]) {
+        return grid[a];
       }
     }
-    return false;
+    if (!grid.includes(null)) {
+      return "Draw";
+    }
+    return null;
   };
 
-  const isWinner = checkWinner();
+  const winner = calculateWinner();
 
-  const handleclick = (index) => {
-    const copyState = [...state];
-    copyState[index] = isXNext ? "X" : "O";
-    setState(copyState);
-    setIsXNext(!isXNext);
+  const handleClick = (index) => {
+    if (grid[index] || winner) {
+      return;
+    }
+    const newGrid = [...grid];
+    newGrid[index] = currentPlayer;
+    setGrid(newGrid);
+    setCurrentPlayer(currentPlayer === "X" ? "O" : "X");
   };
 
-  const handleReset = () => {
-    setState(Array(9).fill(null));
+  const resetGame = () => {
+    setGrid(Array(9).fill(null));
+    setCurrentPlayer("X");
   };
+
   return (
     <div className="board-container">
-      {isWinner ? (
+      {winner ? (
         <>
-          {isWinner} Won the Game{" "}
-          <button onClick={handleReset}>Play Again</button>
+          {winner} Won the Game <button onClick={resetGame}>Play Again</button>
         </>
       ) : (
         <>
-          <h1 classname="player-Name">
-            Player: {isXNext ? "X" : "O"} Please Move
-          </h1>
+          <h1 className="player-Name">Player: {currentPlayer} Please Move</h1>
           <div className="board-row">
-            <Square onClick={() => handleclick(0)} value={state[0]} />
-            <Square onClick={() => handleclick(1)} value={state[1]} />
-            <Square onClick={() => handleclick(2)} value={state[2]} />
+            <Square onClick={() => handleClick(0)} value={grid[0]} />
+            <Square onClick={() => handleClick(1)} value={grid[1]} />
+            <Square onClick={() => handleClick(2)} value={grid[2]} />
           </div>
           <div className="board-row">
-            <Square onClick={() => handleclick(3)} value={state[3]} />
-            <Square onClick={() => handleclick(4)} value={state[4]} />
-            <Square onClick={() => handleclick(5)} value={state[5]} />
+            <Square onClick={() => handleClick(3)} value={grid[3]} />
+            <Square onClick={() => handleClick(4)} value={grid[4]} />
+            <Square onClick={() => handleClick(5)} value={grid[5]} />
           </div>
           <div className="board-row">
-            <Square onClick={() => handleclick(6)} value={state[6]} />
-            <Square onClick={() => handleclick(7)} value={state[7]} />
-            <Square onClick={() => handleclick(8)} value={state[8]} />
+            <Square onClick={() => handleClick(6)} value={grid[6]} />
+            <Square onClick={() => handleClick(7)} value={grid[7]} />
+            <Square onClick={() => handleClick(8)} value={grid[8]} />
           </div>
         </>
       )}
