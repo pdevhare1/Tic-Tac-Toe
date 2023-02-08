@@ -19,7 +19,7 @@ const Board = () => {
     for (const combination of winningCombinations) {
       const [a, b, c] = combination;
       if (grid[a] && grid[a] === grid[b] && grid[a] === grid[c]) {
-        return grid[a];
+        return grid[a] + "Won the Game";
       }
     }
     if (!grid.includes(null)) {
@@ -49,25 +49,37 @@ const Board = () => {
     <div className="board-container">
       {winner ? (
         <>
-          {winner} Won the Game <button onClick={resetGame}>Play Again</button>
+          {winner} <button onClick={resetGame}>Play Again</button>
         </>
       ) : (
         <>
           <h1 className="player-Name">Player: {currentPlayer} Please Move</h1>
           <div className="board-row">
-            <Square onClick={() => handleClick(0)} value={grid[0]} />
-            <Square onClick={() => handleClick(1)} value={grid[1]} />
-            <Square onClick={() => handleClick(2)} value={grid[2]} />
+            {Array(3)
+              .fill(null)
+              .map((_, i) => (
+                <Square onClick={() => handleClick(i)} value={grid[i]} />
+              ))}
           </div>
           <div className="board-row">
-            <Square onClick={() => handleClick(3)} value={grid[3]} />
-            <Square onClick={() => handleClick(4)} value={grid[4]} />
-            <Square onClick={() => handleClick(5)} value={grid[5]} />
+            {Array(3)
+              .fill(null)
+              .map((_, i) => (
+                <Square
+                  onClick={() => handleClick(i + 3)}
+                  value={grid[i + 3]}
+                />
+              ))}
           </div>
           <div className="board-row">
-            <Square onClick={() => handleClick(6)} value={grid[6]} />
-            <Square onClick={() => handleClick(7)} value={grid[7]} />
-            <Square onClick={() => handleClick(8)} value={grid[8]} />
+            {Array(3)
+              .fill(null)
+              .map((_, i) => (
+                <Square
+                  onClick={() => handleClick(i + 6)}
+                  value={grid[i + 6]}
+                />
+              ))}
           </div>
         </>
       )}
